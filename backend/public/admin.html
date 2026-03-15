@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Frame Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white">
+  <div class="mx-auto max-w-6xl px-6 py-10">
+    <h1 class="text-2xl font-semibold">Pixel Frame Admin</h1>
+
+    <section id="loginPanel" class="mt-8 max-w-md rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h2 class="text-lg font-semibold">Login</h2>
+      <div class="mt-4 grid gap-3">
+        <input id="email" type="email" placeholder="Email" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm" />
+        <input id="password" type="password" placeholder="Password" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm" />
+        <button id="loginBtn" class="rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-black">Login</button>
+        <p id="loginError" class="text-sm text-red-400"></p>
+      </div>
+    </section>
+
+    <section id="adminPanel" class="mt-10 hidden">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <h2 class="text-xl font-semibold">Dashboard</h2>
+        <button id="logoutBtn" class="rounded-xl border border-white/20 px-4 py-2 text-sm">Logout</button>
+      </div>
+
+      <div class="mt-8 grid gap-8 lg:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="text-lg font-semibold">Add Portfolio Item</h3>
+          <div class="mt-4 grid gap-3">
+            <input id="pfBrand" type="text" placeholder="Brand" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm" />
+            <input id="pfTitle" type="text" placeholder="Title" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm" />
+            <select id="pfType" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm">
+              <option value="image">Image</option>
+              <option value="video">Video</option>
+            </select>
+            <input id="pfMedia" type="file" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm" />
+            <button id="addPortfolioBtn" class="rounded-xl bg-purple-500 px-4 py-2 text-sm font-semibold">Add Portfolio Item</button>
+            <p id="portfolioMsg" class="text-sm text-emerald-300"></p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="text-lg font-semibold">Portfolio Items</h3>
+          <div id="portfolioList" class="mt-4 grid gap-3 text-sm"></div>
+        </div>
+      </div>
+
+      <div class="mt-10 grid gap-8 lg:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="text-lg font-semibold">Add Service</h3>
+          <div class="mt-4 grid gap-3">
+            <input id="sName" type="text" placeholder="Service name" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm" />
+            <textarea id="sDesc" placeholder="Description" class="min-h-[90px] rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm"></textarea>
+            <button id="addServiceBtn" class="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-semibold text-black">Add Service</button>
+            <p id="serviceMsg" class="text-sm text-emerald-300"></p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="text-lg font-semibold">Services</h3>
+          <div id="servicesList" class="mt-4 grid gap-3 text-sm"></div>
+        </div>
+      </div>
+
+      <div class="mt-10 rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h3 class="text-lg font-semibold">Contact Submissions</h3>
+        <div id="contactsList" class="mt-4 grid gap-3 text-sm"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const loginPanel = document.getElementById("loginPanel");
+    const adminPanel = document.getElementById("adminPanel");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginError = document.getElementById("loginError");
+
+    const portfolioMsg = document.getElementById("portfolioMsg");
+    const serviceMsg = document.getElementById("serviceMsg");
+
+    const tokenKey = "pf_token";
+    const api = (path, options = {}) => {
+      const token = localStorage.getItem(tokenKey);
+      return fetch(path, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(options.headers || {})
+        }
+      });
+    };
+
+    function setAuthed(isAuthed) {
+      loginPanel.classList.toggle("hidden", isAuthed);
+      adminPanel.classList.toggle("hidden", !isAuthed);
+    }
+
+    async function refreshPortfolio() {
+      const res = await api("/api/portfolio");
+      const data = await res.json();
+      const list = document.getElementById("portfolioList");
+      list.innerHTML = "";
+      data.forEach((p) => {
+        const row = document.createElement("div");
+        row.className = "rounded-xl border border-white/10 bg-black/40 p-3 flex items-center justify-between gap-4";
+        row.innerHTML = `
+          <div>
+            <div class="font-semibold">${p.brand}</div>
+            <div class="text-white/60">${p.title || p.type}</div>
+          </div>
+          <button data-id="${p.id}" class="deletePortfolio rounded-lg border border-red-400/40 px-3 py-1 text-xs text-red-300">Delete</button>
+        `;
+        list.appendChild(row);
+      });
+      list.querySelectorAll(".deletePortfolio").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          await api(`/api/portfolio/${btn.dataset.id}`, { method: "DELETE" });
+          refreshPortfolio();
+        });
+      });
+    }
+
+    async function refreshServices() {
+      const res = await api("/api/services");
+      const data = await res.json();
+      const list = document.getElementById("servicesList");
+      list.innerHTML = "";
+      data.forEach((s) => {
+        const row = document.createElement("div");
+        row.className = "rounded-xl border border-white/10 bg-black/40 p-3 flex items-center justify-between gap-4";
+        row.innerHTML = `
+          <div>
+            <div class="font-semibold">${s.name}</div>
+            <div class="text-white/60">${s.description || ""}</div>
+          </div>
+          <button data-id="${s.id}" class="deleteService rounded-lg border border-red-400/40 px-3 py-1 text-xs text-red-300">Delete</button>
+        `;
+        list.appendChild(row);
+      });
+      list.querySelectorAll(".deleteService").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          await api(`/api/services/${btn.dataset.id}`, { method: "DELETE" });
+          refreshServices();
+        });
+      });
+    }
+
+    async function refreshContacts() {
+      const res = await api("/api/contacts");
+      const data = await res.json();
+      const list = document.getElementById("contactsList");
+      list.innerHTML = "";
+      data.forEach((c) => {
+        const row = document.createElement("div");
+        row.className = "rounded-xl border border-white/10 bg-black/40 p-3";
+        row.innerHTML = `
+          <div class="font-semibold">${c.name} <span class="text-white/50">(${c.email})</span></div>
+          <div class="text-white/70">${c.message}</div>
+          <div class="text-white/50 text-xs mt-1">Need: ${c.need || "N/A"}</div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    loginBtn.addEventListener("click", async () => {
+      loginError.textContent = "";
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      if (!res.ok) {
+        loginError.textContent = "Invalid login.";
+        return;
+      }
+      const data = await res.json();
+      localStorage.setItem(tokenKey, data.token);
+      setAuthed(true);
+      refreshPortfolio();
+      refreshServices();
+      refreshContacts();
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem(tokenKey);
+      setAuthed(false);
+    });
+
+    document.getElementById("addPortfolioBtn").addEventListener("click", async () => {
+      portfolioMsg.textContent = "";
+      const brand = document.getElementById("pfBrand").value.trim();
+      const title = document.getElementById("pfTitle").value.trim();
+      const type = document.getElementById("pfType").value;
+      const fileInput = document.getElementById("pfMedia");
+
+      if (!fileInput.files[0]) {
+        portfolioMsg.textContent = "Upload a file.";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${localStorage.getItem(tokenKey)}` },
+        body: formData
+      });
+      const uploadData = await uploadRes.json();
+      const media_url = uploadData.url || "";
+
+      const res = await api("/api/portfolio", {
+        method: "POST",
+        body: JSON.stringify({ brand, title, type, media_url })
+      });
+
+      if (res.ok) {
+        portfolioMsg.textContent = "Portfolio item added.";
+        document.getElementById("pfBrand").value = "";
+        document.getElementById("pfTitle").value = "";
+        fileInput.value = "";
+        refreshPortfolio();
+      } else {
+        portfolioMsg.textContent = "Failed to add item.";
+      }
+    });
+
+    document.getElementById("addServiceBtn").addEventListener("click", async () => {
+      serviceMsg.textContent = "";
+      const name = document.getElementById("sName").value.trim();
+      const description = document.getElementById("sDesc").value.trim();
+      const res = await api("/api/services", {
+        method: "POST",
+        body: JSON.stringify({ name, description })
+      });
+      if (res.ok) {
+        serviceMsg.textContent = "Service added.";
+        document.getElementById("sName").value = "";
+        document.getElementById("sDesc").value = "";
+        refreshServices();
+      } else {
+        serviceMsg.textContent = "Failed to add service.";
+      }
+    });
+
+    if (localStorage.getItem(tokenKey)) {
+      setAuthed(true);
+      refreshPortfolio();
+      refreshServices();
+      refreshContacts();
+    }
+  </script>
+</body>
+</html>

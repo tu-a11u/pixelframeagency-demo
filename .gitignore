@@ -1,0 +1,13 @@
+# Ignore large media files for demo hosting
+assets/videos/
+assets/coco cola/
+assets/bhim/
+*.mp4
+*.mov
+*.zip
+
+# Backend artifacts
+backend/node_modules/
+backend/data.db
+backend/uploads/
+backend/.env
