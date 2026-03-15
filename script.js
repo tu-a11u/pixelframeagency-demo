@@ -130,7 +130,8 @@ if (brandUniverse) {
       const depth = parseFloat(item.el.dataset.depth || '1');
       const y = Math.sin(time * 0.0006 * item.speed + item.phase) * 6 * depth;
       const x = Math.cos(time * 0.0004 * item.speed + item.phase) * 4 * depth;
-      item.el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      item.el.style.setProperty('--fx', `${x}px`);
+      item.el.style.setProperty('--fy', `${y}px`);
     });
     requestAnimationFrame(floatTick);
   }
@@ -163,14 +164,27 @@ if (brandUniverse) {
       if (dist < max) {
         const strength = (1 - dist / max) * 6;
         gsap.to(bubble, {
-          x: (dx / max) * strength,
-          y: (dy / max) * strength,
+          '--mx': `${(dx / max) * strength}px`,
+          '--my': `${(dy / max) * strength}px`,
           duration: 0.2,
+          ease: 'power2.out'
+        });
+      } else {
+        gsap.to(bubble, {
+          '--mx': '0px',
+          '--my': '0px',
+          duration: 0.4,
           ease: 'power2.out'
         });
       }
     });
   });
+
+  // Intro animation
+  gsap.set('.brand-universe-title', { opacity: 0, y: 20 });
+  gsap.set('.brand-row', { opacity: 0, y: 20 });
+  gsap.to('.brand-universe-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' });
+  gsap.to('.brand-row', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', stagger: 0.2, delay: 0.2 });
 
   // Three.js particles
   const canvas = document.getElementById('brand-particles');
