@@ -150,6 +150,14 @@ if (lightbox) {
         iframe.style.height = '70vh';
         iframe.style.border = '0';
         mediaWrap.appendChild(iframe);
+
+        const link = document.createElement('a');
+        link.href = `https://drive.google.com/file/d/${driveId}/view`;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = 'Open Video in New Tab';
+        link.className = 'lightbox-link';
+        mediaWrap.appendChild(link);
       } else {
         const video = document.createElement('video');
         video.src = src;

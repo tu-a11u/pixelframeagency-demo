@@ -545,6 +545,20 @@ border-radius:12px;
 display:block;
 }
 
+.lightbox-link{
+display:inline-block;
+margin-top:10px;
+padding:8px 14px;
+border-radius:999px;
+background:rgba(122,215,255,0.2);
+border:1px solid rgba(122,215,255,0.4);
+color:#e8f6ff;
+text-decoration:none;
+font-size:12px;
+letter-spacing:1px;
+text-transform:uppercase;
+}
+
 .lightbox-media video{
 background:#000;
 }
