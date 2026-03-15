@@ -1,4 +1,5 @@
 // Premium brand marquee animations with GSAP
+gsap.registerPlugin(ScrollTrigger);
 const panel = document.querySelector('.marquee-panel');
 const rows = document.querySelectorAll('.marquee-row');
 
@@ -108,15 +109,28 @@ if (brandUniverse) {
   const bubbleTracks = brandUniverse.querySelectorAll('.brand-track');
   const bubbles = brandUniverse.querySelectorAll('.brand-bubble');
 
-  // Infinite scrolling cloud
+  // Add ripple elements
+  bubbles.forEach((bubble) => {
+    if (!bubble.querySelector('.ripple')) {
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      bubble.appendChild(ripple);
+    }
+  });
+
+  // Infinite scrolling cloud with ScrollTrigger velocity
   const cloudTweens = [];
-  bubbleTracks.forEach((track, idx) => {
+  bubbleTracks.forEach((track) => {
+    const row = track.closest('.brand-row');
+    const direction = row?.dataset.direction || 'left';
     const half = track.scrollWidth / 2;
-    const duration = idx === 0 ? 28 : idx === 1 ? 32 : 36;
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const duration = isMobile ? 48 : 32;
+
     const tween = gsap.fromTo(
       track,
-      { x: idx % 2 === 0 ? 0 : -half },
-      { x: idx % 2 === 0 ? -half : 0, duration, ease: 'none', repeat: -1 }
+      { x: direction === 'right' ? -half : 0 },
+      { x: direction === 'right' ? 0 : -half, duration, ease: 'none', repeat: -1 }
     );
     cloudTweens.push(tween);
   });
@@ -139,7 +153,7 @@ if (brandUniverse) {
   }
   requestAnimationFrame(floatTick);
 
-  // Parallax + magnetic
+  // Parallax + magnetic + ripple
   brandUniverse.addEventListener('mousemove', (e) => {
     const rect = brandUniverse.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
@@ -163,6 +177,11 @@ if (brandUniverse) {
       const dy = e.clientY - cy;
       const dist = Math.hypot(dx, dy);
       const max = 120;
+      const rx = ((e.clientX - r.left) / r.width) * 100;
+      const ry = ((e.clientY - r.top) / r.height) * 100;
+      bubble.style.setProperty('--rx', `${rx}%`);
+      bubble.style.setProperty('--ry', `${ry}%`);
+      bubble.classList.add('ripple-on');
       if (dist < max) {
         const strength = (1 - dist / max) * 6;
         gsap.to(bubble, {
@@ -182,31 +201,55 @@ if (brandUniverse) {
     });
   });
 
+  brandUniverse.addEventListener('mouseleave', () => {
+    bubbles.forEach((bubble) => {
+      bubble.classList.remove('ripple-on');
+      gsap.to(bubble, { '--mx': '0px', '--my': '0px', duration: 0.4, ease: 'power2.out' });
+    });
+  });
+
   // Row wave animation
   gsap.to('.layer-front', { '--rowy': '6px', duration: 4.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
   gsap.to('.layer-mid', { '--rowy': '10px', duration: 5.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
   gsap.to('.layer-back', { '--rowy': '14px', duration: 6.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
-  // Speed boost on scroll
-  let lastY = window.scrollY;
+  // Speed boost on scroll using ScrollTrigger velocity
   let boostTimer = null;
-  window.addEventListener('scroll', () => {
-    const now = window.scrollY;
-    const delta = Math.abs(now - lastY);
-    lastY = now;
-    const boost = Math.min(2, 1 + delta / 250);
-    cloudTweens.forEach((t) => gsap.to(t, { timeScale: boost, duration: 0.2 }));
-    clearTimeout(boostTimer);
-    boostTimer = setTimeout(() => {
-      cloudTweens.forEach((t) => gsap.to(t, { timeScale: 1, duration: 0.6, ease: 'power2.out' }));
-    }, 160);
+  ScrollTrigger.create({
+    trigger: brandUniverse,
+    start: 'top bottom',
+    end: 'bottom top',
+    onUpdate: (self) => {
+      const v = Math.abs(self.getVelocity());
+      const boost = Math.min(2.2, 1 + v / 1200);
+      cloudTweens.forEach((t) => gsap.to(t, { timeScale: boost, duration: 0.2 }));
+      clearTimeout(boostTimer);
+      boostTimer = setTimeout(() => {
+        cloudTweens.forEach((t) => gsap.to(t, { timeScale: 1, duration: 0.6, ease: 'power2.out' }));
+      }, 160);
+    }
   });
 
   // Intro animation
   gsap.set('.brand-universe-title', { opacity: 0, y: 20 });
-  gsap.set('.brand-row', { opacity: 0, y: 20 });
+  gsap.set('.brand-row', { opacity: 0, y: 20, filter: 'blur(10px)' });
   gsap.to('.brand-universe-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' });
-  gsap.to('.brand-row', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', stagger: 0.2, delay: 0.2 });
+  gsap.to('.brand-row', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out', stagger: 0.2, delay: 0.2 });
+
+  // Scroll progress indicator line
+  const progress = brandUniverse.querySelector('.brand-progress');
+  if (progress) {
+    gsap.fromTo(progress, { scaleX: 0 }, {
+      scaleX: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: brandUniverse,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+  }
 
   // Three.js particles
   const canvas = document.getElementById('brand-particles');

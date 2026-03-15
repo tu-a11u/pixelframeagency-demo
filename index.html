@@ -9,6 +9,7 @@
 
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 </head>
@@ -54,11 +55,12 @@
 <section class="brand-universe" id="brand-showcase">
   <canvas id="brand-particles"></canvas>
   <div class="brand-noise"></div>
+  <div class="brand-progress"></div>
 
   <h2 class="brand-universe-title">WE WORK WITH FORWARD-THINKING BRANDS</h2>
 
   <div class="brand-layers">
-    <div class="brand-row layer layer-front">
+    <div class="brand-row layer layer-front" data-direction="left">
       <div class="brand-track">
         <div class="brand-bubble" data-depth="1.2">
           <div class="brand-icon">ZW</div><span>ZENTRA WATCH</span>
@@ -96,7 +98,7 @@
       </div>
     </div>
 
-    <div class="brand-row layer layer-mid">
+    <div class="brand-row layer layer-mid" data-direction="right">
       <div class="brand-track">
         <div class="brand-bubble" data-depth="0.8"><div class="brand-icon">NI</div><span>NIKE</span></div>
         <div class="brand-bubble" data-depth="0.9"><div class="brand-icon">ZW</div><span>ZENTRA WATCH</span></div>
@@ -118,7 +120,7 @@
       </div>
     </div>
 
-    <div class="brand-row layer layer-back">
+    <div class="brand-row layer layer-back" data-direction="left">
       <div class="brand-track">
         <div class="brand-bubble" data-depth="0.5"><div class="brand-icon">BJ</div><span>BASRAA JEWELS</span></div>
         <div class="brand-bubble" data-depth="0.6"><div class="brand-icon">OD</div><span>OFF DUTY</span></div>

@@ -817,6 +817,21 @@ z-index:1;
 pointer-events:none;
 }
 
+.brand-progress{
+position:absolute;
+top:18px;
+left:50%;
+transform:translateX(-50%);
+width:min(680px, 86vw);
+height:2px;
+background:linear-gradient(90deg, rgba(122,215,255,0.2), rgba(255,95,69,0.7), rgba(122,215,255,0.2));
+border-radius:999px;
+box-shadow:0 0 12px rgba(122,215,255,0.5);
+opacity:0.7;
+z-index:2;
+transform-origin:left center;
+}
+
 .brand-noise{
 position:absolute;
 inset:0;
@@ -875,6 +890,7 @@ position:relative;
 transform:translate3d(calc(var(--fx, 0px) + var(--mx, 0px)), calc(var(--fy, 0px) + var(--my, 0px)), 0) scale(var(--scale, 1));
 transform-style:preserve-3d;
 will-change:transform, box-shadow;
+overflow:hidden;
 }
 
 .brand-icon{
@@ -929,6 +945,25 @@ mix-blend-mode:screen;
 transform:translateX(-60%);
 animation:shine 6s ease-in-out infinite;
 pointer-events:none;
+}
+
+.brand-bubble .ripple{
+position:absolute;
+width:160px;
+height:160px;
+border-radius:50%;
+background:radial-gradient(circle, rgba(122,215,255,0.35), transparent 60%);
+transform:translate(-50%, -50%);
+left:var(--rx, 50%);
+top:var(--ry, 50%);
+opacity:0;
+pointer-events:none;
+transition:opacity 0.35s ease;
+mix-blend-mode:screen;
+}
+
+.brand-bubble.ripple-on .ripple{
+opacity:0.8;
 }
 
 .layer-front{ opacity:1; }
