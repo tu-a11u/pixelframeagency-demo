@@ -116,7 +116,11 @@ const lightbox = document.getElementById('lightbox');
 if (lightbox) {
   const mediaWrap = lightbox.querySelector('.lightbox-media');
   const closeBtn = lightbox.querySelector('.lightbox-close');
+  const prevBtn = lightbox.querySelector('.lightbox-nav.prev');
+  const nextBtn = lightbox.querySelector('.lightbox-nav.next');
   const backdrop = lightbox.querySelector('.lightbox-backdrop');
+  const cards = Array.from(document.querySelectorAll('.media-card'));
+  let currentIndex = -1;
 
   function closeLightbox() {
     lightbox.classList.remove('active');
@@ -143,27 +147,41 @@ if (lightbox) {
     document.body.style.overflow = 'hidden';
   }
 
-  document.querySelectorAll('.media-card').forEach((card) => {
-    card.addEventListener('click', () => {
-      const type = card.dataset.type || 'image';
-      const src = card.dataset.src;
-      const title = card.querySelector('h3')?.textContent || '';
-      if (src) openLightbox(type, src, title);
-    });
+  function openByIndex(index) {
+    if (!cards.length) return;
+    const total = cards.length;
+    currentIndex = (index + total) % total;
+    const card = cards[currentIndex];
+    const type = card.dataset.type || 'image';
+    const src = card.dataset.src;
+    const title = card.querySelector('h3')?.textContent || '';
+    if (src) openLightbox(type, src, title);
+  }
+
+  cards.forEach((card, index) => {
+    card.addEventListener('click', () => openByIndex(index));
     card.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter' && e.key !== ' ') return;
       e.preventDefault();
-      const type = card.dataset.type || 'image';
-      const src = card.dataset.src;
-      const title = card.querySelector('h3')?.textContent || '';
-      if (src) openLightbox(type, src, title);
+      openByIndex(index);
     });
   });
 
   closeBtn.addEventListener('click', closeLightbox);
   backdrop.addEventListener('click', closeLightbox);
+  if (prevBtn) prevBtn.addEventListener('click', () => {
+    if (!lightbox.classList.contains('active')) return;
+    openByIndex(currentIndex - 1);
+  });
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    if (!lightbox.classList.contains('active')) return;
+    openByIndex(currentIndex + 1);
+  });
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'ArrowLeft') openByIndex(currentIndex - 1);
+    if (e.key === 'ArrowRight') openByIndex(currentIndex + 1);
   });
 }
 

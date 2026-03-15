@@ -563,6 +563,28 @@ border-radius:50%;
 cursor:pointer;
 }
 
+.lightbox-nav{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+width:36px;
+height:36px;
+border-radius:50%;
+border:none;
+background:rgba(255,255,255,0.12);
+color:#fff;
+font-size:22px;
+cursor:pointer;
+}
+
+.lightbox-nav.prev{ left:10px; }
+.lightbox-nav.next{ right:10px; }
+
+.lightbox-nav:hover,
+.lightbox-close:hover{
+background:rgba(122,215,255,0.3);
+}
+
 @media (max-width: 900px){
   .portfolio-section{ padding:20px 22px 50px; }
   .page-hero h1{ font-size:36px; }
