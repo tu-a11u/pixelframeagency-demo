@@ -160,6 +160,7 @@
         row.className = "rounded-xl border border-white/10 bg-black/40 p-3";
         row.innerHTML = `
           <div class="font-semibold">${c.name} <span class="text-white/50">(${c.email})</span></div>
+          <div class="text-white/50 text-xs mt-1">Phone: ${c.phone || "N/A"}</div>
           <div class="text-white/70">${c.message}</div>
           <div class="text-white/50 text-xs mt-1">Need: ${c.need || "N/A"}</div>
         `;

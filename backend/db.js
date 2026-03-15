@@ -26,11 +26,13 @@ export function initDb() {
         name TEXT NOT NULL,
         email TEXT NOT NULL,
         message TEXT NOT NULL,
+        phone TEXT,
         need TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
+    db.run("ALTER TABLE contacts ADD COLUMN phone TEXT", [], () => {});
     db.run("ALTER TABLE contacts ADD COLUMN need TEXT", [], () => {});
 
     db.run(`

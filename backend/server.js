@@ -78,14 +78,15 @@ app.post("/api/auth/login", (req, res) => {
 
 // CONTACT
 app.post("/api/contact", (req, res) => {
-  let { name, email, message, need } = req.body || {};
+  let { name, email, phone, message, need } = req.body || {};
   if (!message) return res.status(400).json({ error: "Missing message" });
   name = name && name.trim() ? name.trim() : "Anonymous";
   email = email && email.trim() ? email.trim() : "unknown@local";
+  phone = phone && phone.trim() ? phone.trim() : "";
 
   db.run(
-    "INSERT INTO contacts (name, email, message, need) VALUES (?, ?, ?, ?)",
-    [name, email, message, need || ""],
+    "INSERT INTO contacts (name, email, phone, message, need) VALUES (?, ?, ?, ?, ?)",
+    [name, email, phone, message, need || ""],
     function (err) {
       if (err) return res.status(500).json({ error: "Server error" });
       return res.json({ ok: true, id: this.lastID });
