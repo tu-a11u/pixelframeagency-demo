@@ -37,19 +37,23 @@ padding:26px 80px;
 
 }
 
-.logo{
-
+.logo-container{
 display:flex;
 align-items:center;
 gap:10px;
 font-weight:bold;
 letter-spacing:1px;
 font-size:16px;
-
+white-space:nowrap;
 }
 
-.logo img{
+.logo-container img{
 height:44px;
+display:block;
+}
+
+.logo-container span{
+line-height:1;
 }
 
 .nav-links{
