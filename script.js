@@ -168,11 +168,24 @@ if (lightbox) {
 }
 
 // Keep inputs interactive as before
-const inputs = document.querySelectorAll('input,select');
+const inputs = document.querySelectorAll('input,select,textarea');
 inputs.forEach((input) => {
   input.addEventListener('focus', () => { input.style.background = '#2b2b2b'; });
   input.addEventListener('blur', () => { input.style.background = '#1e1e1e'; });
 });
+
+function setStatus(form, message, type) {
+  let status = form.querySelector('.form-status');
+  if (!status) {
+    status = document.createElement('div');
+    status.className = 'form-status';
+    form.appendChild(status);
+  }
+  status.textContent = message;
+  status.classList.remove('success', 'error', 'show');
+  if (type) status.classList.add(type);
+  requestAnimationFrame(() => status.classList.add('show'));
+}
 
 // Contact form submission (works for index and contact page)
 const contactForms = document.querySelectorAll('form');
@@ -189,19 +202,20 @@ contactForms.forEach((form) => {
 
     const base = (document.querySelector('meta[name="api-base"]')?.content || 'http://localhost:4000').replace(/\/$/, '');
     try {
+      setStatus(form, 'Sending...', '');
       const res = await fetch(`${base}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, need, message })
       });
       if (res.ok) {
-        alert('Message sent. We will contact you soon.');
+        setStatus(form, 'Message sent. We will contact you soon.', 'success');
         form.reset();
       } else {
-        alert('Failed to send message.');
+        setStatus(form, 'Failed to send message.', 'error');
       }
     } catch (err) {
-      alert('Server unavailable.');
+      setStatus(form, 'Server unavailable.', 'error');
     }
   });
 });

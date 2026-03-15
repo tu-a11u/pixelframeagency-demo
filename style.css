@@ -311,6 +311,32 @@ margin-right:auto;
 
 }
 
+.form-status{
+min-height:18px;
+margin-top:12px;
+text-align:center;
+font-size:11px;
+letter-spacing:1px;
+text-transform:uppercase;
+color:#cfd2ff;
+opacity:0;
+transition:opacity 0.2s ease, transform 0.2s ease;
+transform:translateY(4px);
+}
+
+.form-status.show{
+opacity:1;
+transform:translateY(0);
+}
+
+.form-status.success{
+color:#9fffd1;
+}
+
+.form-status.error{
+color:#ffb3b3;
+}
+
 @media (max-width: 900px){
   .navbar{ padding:22px 28px; }
   .nav-links{ gap:28px; }
