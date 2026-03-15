@@ -109,14 +109,16 @@ if (brandUniverse) {
   const bubbles = brandUniverse.querySelectorAll('.brand-bubble');
 
   // Infinite scrolling cloud
+  const cloudTweens = [];
   bubbleTracks.forEach((track, idx) => {
     const half = track.scrollWidth / 2;
-    const duration = idx === 0 ? 40 : idx === 1 ? 46 : 52;
-    gsap.fromTo(
+    const duration = idx === 0 ? 28 : idx === 1 ? 32 : 36;
+    const tween = gsap.fromTo(
       track,
       { x: idx % 2 === 0 ? 0 : -half },
       { x: idx % 2 === 0 ? -half : 0, duration, ease: 'none', repeat: -1 }
     );
+    cloudTweens.push(tween);
   });
 
   // Floating drift (rAF)
@@ -178,6 +180,26 @@ if (brandUniverse) {
         });
       }
     });
+  });
+
+  // Row wave animation
+  gsap.to('.layer-front', { '--rowy': '6px', duration: 4.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  gsap.to('.layer-mid', { '--rowy': '10px', duration: 5.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  gsap.to('.layer-back', { '--rowy': '14px', duration: 6.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+
+  // Speed boost on scroll
+  let lastY = window.scrollY;
+  let boostTimer = null;
+  window.addEventListener('scroll', () => {
+    const now = window.scrollY;
+    const delta = Math.abs(now - lastY);
+    lastY = now;
+    const boost = Math.min(2, 1 + delta / 250);
+    cloudTweens.forEach((t) => gsap.to(t, { timeScale: boost, duration: 0.2 }));
+    clearTimeout(boostTimer);
+    boostTimer = setTimeout(() => {
+      cloudTweens.forEach((t) => gsap.to(t, { timeScale: 1, duration: 0.6, ease: 'power2.out' }));
+    }, 160);
   });
 
   // Intro animation
