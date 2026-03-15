@@ -337,6 +337,16 @@ color:#9fffd1;
 color:#ffb3b3;
 }
 
+.form-status.success{
+animation:statusPulse 1.2s ease-out 1;
+}
+
+@keyframes statusPulse{
+0%{ text-shadow:0 0 0 rgba(159,255,209,0); }
+50%{ text-shadow:0 0 18px rgba(159,255,209,0.6); }
+100%{ text-shadow:0 0 0 rgba(159,255,209,0); }
+}
+
 @media (max-width: 900px){
   .navbar{ padding:22px 28px; }
   .nav-links{ gap:28px; }

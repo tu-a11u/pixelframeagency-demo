@@ -197,6 +197,7 @@ contactForms.forEach((form) => {
 
     const name = form.querySelector('input[type="text"]')?.value || "";
     const email = form.querySelector('input[type="email"]')?.value || "";
+    const phone = form.querySelector('input[type="tel"]')?.value || "";
     const need = form.querySelector('select')?.value || "";
     const message = form.querySelector('textarea')?.value || "";
 
@@ -206,10 +207,10 @@ contactForms.forEach((form) => {
       const res = await fetch(`${base}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, need, message })
+        body: JSON.stringify({ name, email, phone, need, message })
       });
       if (res.ok) {
-        setStatus(form, 'Message sent. We will contact you soon.', 'success');
+        setStatus(form, 'We will contact you soon.', 'success');
         form.reset();
       } else {
         setStatus(form, 'Failed to send message.', 'error');
