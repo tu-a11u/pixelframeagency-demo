@@ -102,6 +102,119 @@ if (panel) {
   });
 }
 
+// Brand universe: floating bubbles + infinite cloud + particles
+const brandUniverse = document.querySelector('.brand-universe');
+if (brandUniverse) {
+  const bubbleTracks = brandUniverse.querySelectorAll('.brand-track');
+  const bubbles = brandUniverse.querySelectorAll('.brand-bubble');
+
+  // Infinite scrolling cloud
+  bubbleTracks.forEach((track, idx) => {
+    const half = track.scrollWidth / 2;
+    const duration = idx === 0 ? 40 : idx === 1 ? 46 : 52;
+    gsap.fromTo(
+      track,
+      { x: idx % 2 === 0 ? 0 : -half },
+      { x: idx % 2 === 0 ? -half : 0, duration, ease: 'none', repeat: -1 }
+    );
+  });
+
+  // Floating drift (rAF)
+  const floatData = Array.from(bubbles).map((bubble) => ({
+    el: bubble,
+    speed: 0.15 + Math.random() * 0.35,
+    phase: Math.random() * Math.PI * 2
+  }));
+  function floatTick(time) {
+    floatData.forEach((item, i) => {
+      const depth = parseFloat(item.el.dataset.depth || '1');
+      const y = Math.sin(time * 0.0006 * item.speed + item.phase) * 6 * depth;
+      const x = Math.cos(time * 0.0004 * item.speed + item.phase) * 4 * depth;
+      item.el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    });
+    requestAnimationFrame(floatTick);
+  }
+  requestAnimationFrame(floatTick);
+
+  // Parallax + magnetic
+  brandUniverse.addEventListener('mousemove', (e) => {
+    const rect = brandUniverse.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+    brandUniverse.querySelectorAll('.layer-front').forEach((layer) => {
+      gsap.to(layer, { x: x * 14, y: y * 8, duration: 0.4, ease: 'power2.out' });
+    });
+    brandUniverse.querySelectorAll('.layer-mid').forEach((layer) => {
+      gsap.to(layer, { x: x * 10, y: y * 6, duration: 0.4, ease: 'power2.out' });
+    });
+    brandUniverse.querySelectorAll('.layer-back').forEach((layer) => {
+      gsap.to(layer, { x: x * 6, y: y * 4, duration: 0.4, ease: 'power2.out' });
+    });
+
+    bubbles.forEach((bubble) => {
+      const r = bubble.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      const max = 120;
+      if (dist < max) {
+        const strength = (1 - dist / max) * 6;
+        gsap.to(bubble, {
+          x: (dx / max) * strength,
+          y: (dy / max) * strength,
+          duration: 0.2,
+          ease: 'power2.out'
+        });
+      }
+    });
+  });
+
+  // Three.js particles
+  const canvas = document.getElementById('brand-particles');
+  if (canvas && window.THREE) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.z = 200;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const count = 420;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 600;
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({
+      color: 0x7ad7ff,
+      size: 2,
+      transparent: true,
+      opacity: 0.55
+    });
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    function renderParticles() {
+      points.rotation.y += 0.0005;
+      points.rotation.x += 0.0003;
+      renderer.render(scene, camera);
+      requestAnimationFrame(renderParticles);
+    }
+    renderParticles();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  }
+}
+
 // Lightbox for portfolio images/videos
 const lightbox = document.getElementById('lightbox');
 if (lightbox) {

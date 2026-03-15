@@ -9,6 +9,7 @@
 
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 </head>
 
@@ -50,57 +51,92 @@
 </section>
 
 
-<section class="brand-marquee">
-  <p class="brand-title">WE WORK WITH FORWARD-THINKING BRANDS</p>
+<section class="brand-universe" id="brand-showcase">
+  <canvas id="brand-particles"></canvas>
+  <div class="brand-noise"></div>
 
-  <div class="marquee-panel">
-    <div class="marquee-row" data-direction="left">
-      <div class="marquee-track">
-        <div class="brand-item" data-brand="4ACREATION">
-          <div class="brand-logo">4A</div>
-          <span>4ACREATION</span>
+  <h2 class="brand-universe-title">WE WORK WITH FORWARD-THINKING BRANDS</h2>
+
+  <div class="brand-layers">
+    <div class="brand-row layer layer-front">
+      <div class="brand-track">
+        <div class="brand-bubble" data-depth="1.2">
+          <div class="brand-icon">ZW</div><span>ZENTRA WATCH</span>
         </div>
-        <div class="brand-item" data-brand="ZENTRA WATCH">
-          <div class="brand-logo">ZW</div>
-          <span>ZENTRA WATCH</span>
+        <div class="brand-bubble" data-depth="1.1">
+          <div class="brand-icon">MG</div><span>MODDY GIRL</span>
         </div>
-        <div class="brand-item" data-brand="MODDY GIRL">
-          <div class="brand-logo">MG</div>
-          <span>MODDY GIRL</span>
+        <div class="brand-bubble" data-depth="1.3">
+          <div class="brand-icon">NI</div><span>NIKE</span>
         </div>
-        <div class="brand-item" data-brand="NIKE">
-          <div class="brand-logo">NK</div>
-          <span>NIKE</span>
+        <div class="brand-bubble" data-depth="1.0">
+          <div class="brand-icon">NMS</div><span>NEXTMINUTESTARTUP</span>
         </div>
-        <div class="brand-item" data-brand="NEXTMINUTESTARTUP">
-          <div class="brand-logo">NM</div>
-          <span>NEXTMINUTESTARTUP</span>
+        <div class="brand-bubble" data-depth="1.2">
+          <div class="brand-icon">BJ</div><span>BASRAA JEWELS</span>
         </div>
+        <div class="brand-bubble" data-depth="1.1">
+          <div class="brand-icon">DS</div><span>DWARKISH SWEETS</span>
+        </div>
+        <div class="brand-bubble" data-depth="1.3">
+          <div class="brand-icon">OD</div><span>OFF DUTY</span>
+        </div>
+        <div class="brand-bubble" data-depth="1.0">
+          <div class="brand-icon">4A</div><span>4ACREATION</span>
+        </div>
+
+        <div class="brand-bubble" data-depth="1.2"><div class="brand-icon">ZW</div><span>ZENTRA WATCH</span></div>
+        <div class="brand-bubble" data-depth="1.1"><div class="brand-icon">MG</div><span>MODDY GIRL</span></div>
+        <div class="brand-bubble" data-depth="1.3"><div class="brand-icon">NI</div><span>NIKE</span></div>
+        <div class="brand-bubble" data-depth="1.0"><div class="brand-icon">NMS</div><span>NEXTMINUTESTARTUP</span></div>
+        <div class="brand-bubble" data-depth="1.2"><div class="brand-icon">BJ</div><span>BASRAA JEWELS</span></div>
+        <div class="brand-bubble" data-depth="1.1"><div class="brand-icon">DS</div><span>DWARKISH SWEETS</span></div>
+        <div class="brand-bubble" data-depth="1.3"><div class="brand-icon">OD</div><span>OFF DUTY</span></div>
+        <div class="brand-bubble" data-depth="1.0"><div class="brand-icon">4A</div><span>4ACREATION</span></div>
       </div>
     </div>
 
-    <div class="marquee-row depth" data-direction="right">
-      <div class="marquee-track">
-        <div class="brand-item" data-brand="PIXELFRAMEAGENCY">
-          <div class="brand-logo">PF</div>
-          <span>PIXELFRAMEAGENCY</span>
-        </div>
-        <div class="brand-item" data-brand="BASRAA JEWELS">
-          <div class="brand-logo">BJ</div>
-          <span>BASRAA JEWELS</span>
-        </div>
-        <div class="brand-item" data-brand="DWARKISH SWEETS">
-          <div class="brand-logo">DS</div>
-          <span>DWARKISH SWEETS</span>
-        </div>
-        <div class="brand-item" data-brand="OFF DUTY">
-          <div class="brand-logo">OD</div>
-          <span>OFF DUTY</span>
-        </div>
-        <div class="brand-item" data-brand="ZENTRA WATCH">
-          <div class="brand-logo">ZW</div>
-          <span>ZENTRA WATCH</span>
-        </div>
+    <div class="brand-row layer layer-mid">
+      <div class="brand-track">
+        <div class="brand-bubble" data-depth="0.8"><div class="brand-icon">NI</div><span>NIKE</span></div>
+        <div class="brand-bubble" data-depth="0.9"><div class="brand-icon">ZW</div><span>ZENTRA WATCH</span></div>
+        <div class="brand-bubble" data-depth="0.7"><div class="brand-icon">4A</div><span>4ACREATION</span></div>
+        <div class="brand-bubble" data-depth="0.8"><div class="brand-icon">MG</div><span>MODDY GIRL</span></div>
+        <div class="brand-bubble" data-depth="0.9"><div class="brand-icon">BJ</div><span>BASRAA JEWELS</span></div>
+        <div class="brand-bubble" data-depth="0.7"><div class="brand-icon">DS</div><span>DWARKISH SWEETS</span></div>
+        <div class="brand-bubble" data-depth="0.8"><div class="brand-icon">OD</div><span>OFF DUTY</span></div>
+        <div class="brand-bubble" data-depth="0.9"><div class="brand-icon">NMS</div><span>NEXTMINUTESTARTUP</span></div>
+
+        <div class="brand-bubble" data-depth="0.8"><div class="brand-icon">NI</div><span>NIKE</span></div>
+        <div class="brand-bubble" data-depth="0.9"><div class="brand-icon">ZW</div><span>ZENTRA WATCH</span></div>
+        <div class="brand-bubble" data-depth="0.7"><div class="brand-icon">4A</div><span>4ACREATION</span></div>
+        <div class="brand-bubble" data-depth="0.8"><div class="brand-icon">MG</div><span>MODDY GIRL</span></div>
+        <div class="brand-bubble" data-depth="0.9"><div class="brand-icon">BJ</div><span>BASRAA JEWELS</span></div>
+        <div class="brand-bubble" data-depth="0.7"><div class="brand-icon">DS</div><span>DWARKISH SWEETS</span></div>
+        <div class="brand-bubble" data-depth="0.8"><div class="brand-icon">OD</div><span>OFF DUTY</span></div>
+        <div class="brand-bubble" data-depth="0.9"><div class="brand-icon">NMS</div><span>NEXTMINUTESTARTUP</span></div>
+      </div>
+    </div>
+
+    <div class="brand-row layer layer-back">
+      <div class="brand-track">
+        <div class="brand-bubble" data-depth="0.5"><div class="brand-icon">BJ</div><span>BASRAA JEWELS</span></div>
+        <div class="brand-bubble" data-depth="0.6"><div class="brand-icon">OD</div><span>OFF DUTY</span></div>
+        <div class="brand-bubble" data-depth="0.4"><div class="brand-icon">DS</div><span>DWARKISH SWEETS</span></div>
+        <div class="brand-bubble" data-depth="0.5"><div class="brand-icon">NMS</div><span>NEXTMINUTESTARTUP</span></div>
+        <div class="brand-bubble" data-depth="0.6"><div class="brand-icon">4A</div><span>4ACREATION</span></div>
+        <div class="brand-bubble" data-depth="0.4"><div class="brand-icon">NI</div><span>NIKE</span></div>
+        <div class="brand-bubble" data-depth="0.5"><div class="brand-icon">ZW</div><span>ZENTRA WATCH</span></div>
+        <div class="brand-bubble" data-depth="0.6"><div class="brand-icon">MG</div><span>MODDY GIRL</span></div>
+
+        <div class="brand-bubble" data-depth="0.5"><div class="brand-icon">BJ</div><span>BASRAA JEWELS</span></div>
+        <div class="brand-bubble" data-depth="0.6"><div class="brand-icon">OD</div><span>OFF DUTY</span></div>
+        <div class="brand-bubble" data-depth="0.4"><div class="brand-icon">DS</div><span>DWARKISH SWEETS</span></div>
+        <div class="brand-bubble" data-depth="0.5"><div class="brand-icon">NMS</div><span>NEXTMINUTESTARTUP</span></div>
+        <div class="brand-bubble" data-depth="0.6"><div class="brand-icon">4A</div><span>4ACREATION</span></div>
+        <div class="brand-bubble" data-depth="0.4"><div class="brand-icon">NI</div><span>NIKE</span></div>
+        <div class="brand-bubble" data-depth="0.5"><div class="brand-icon">ZW</div><span>ZENTRA WATCH</span></div>
+        <div class="brand-bubble" data-depth="0.6"><div class="brand-icon">MG</div><span>MODDY GIRL</span></div>
       </div>
     </div>
   </div>
