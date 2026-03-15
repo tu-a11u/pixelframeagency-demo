@@ -191,14 +191,14 @@ function setStatus(form, message, type) {
 const contactForms = document.querySelectorAll('form');
 contactForms.forEach((form) => {
   form.addEventListener('submit', async (e) => {
-    const hasContact = form.querySelector('textarea') || form.querySelector('input[type=\"email\"]');
+    const hasContact = form.querySelector('textarea') || form.querySelector('input[type="email"]');
     if (!hasContact) return;
     e.preventDefault();
 
-    const name = form.querySelector('input[type=\"text\"]')?.value || \"\";
-    const email = form.querySelector('input[type=\"email\"]')?.value || \"\";
-    const need = form.querySelector('select')?.value || \"\";
-    const message = form.querySelector('textarea')?.value || \"\";
+    const name = form.querySelector('input[type="text"]')?.value || "";
+    const email = form.querySelector('input[type="email"]')?.value || "";
+    const need = form.querySelector('select')?.value || "";
+    const message = form.querySelector('textarea')?.value || "";
 
     const base = (document.querySelector('meta[name="api-base"]')?.content || 'http://localhost:4000').replace(/\/$/, '');
     try {
