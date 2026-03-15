@@ -128,15 +128,36 @@ if (lightbox) {
     document.body.style.overflow = '';
   }
 
+  function getDriveId(url) {
+    if (!url) return null;
+    const matchFile = url.match(/\/file\/d\/([^/]+)/);
+    if (matchFile) return matchFile[1];
+    const matchUc = url.match(/[?&]id=([^&]+)/);
+    if (matchUc) return matchUc[1];
+    return null;
+  }
+
   function openLightbox(type, src, alt) {
     mediaWrap.innerHTML = '';
     if (type === 'video') {
-      const video = document.createElement('video');
-      video.src = src;
-      video.controls = true;
-      video.autoplay = true;
-      video.playsInline = true;
-      mediaWrap.appendChild(video);
+      const driveId = getDriveId(src);
+      if (driveId) {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://drive.google.com/file/d/${driveId}/preview`;
+        iframe.allow = 'autoplay; fullscreen';
+        iframe.allowFullscreen = true;
+        iframe.style.width = '100%';
+        iframe.style.height = '70vh';
+        iframe.style.border = '0';
+        mediaWrap.appendChild(iframe);
+      } else {
+        const video = document.createElement('video');
+        video.src = src;
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        mediaWrap.appendChild(video);
+      }
     } else {
       const img = document.createElement('img');
       img.src = src;
