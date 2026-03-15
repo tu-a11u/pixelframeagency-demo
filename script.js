@@ -141,6 +141,14 @@ if (lightbox) {
       const title = card.querySelector('h3')?.textContent || '';
       if (src) openLightbox(type, src, title);
     });
+    card.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      const type = card.dataset.type || 'image';
+      const src = card.dataset.src;
+      const title = card.querySelector('h3')?.textContent || '';
+      if (src) openLightbox(type, src, title);
+    });
   });
 
   closeBtn.addEventListener('click', closeLightbox);
