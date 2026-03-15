@@ -245,7 +245,8 @@ border-radius:22px;
 
 
 .contact-card input,
-.contact-card select{
+.contact-card select,
+.contact-card textarea{
 
 width:100%;
 
@@ -277,6 +278,12 @@ background-size:6px 6px, 6px 6px;
 background-repeat:no-repeat;
 padding-right:46px;
 
+}
+
+.contact-card textarea{
+resize:vertical;
+min-height:110px;
+padding-right:16px;
 }
 
 
