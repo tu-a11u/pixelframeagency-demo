@@ -543,6 +543,8 @@ height:auto;
 max-height:78vh;
 border-radius:12px;
 display:block;
+object-fit:contain;
+background:#0a0a0f;
 }
 
 .lightbox-link{
