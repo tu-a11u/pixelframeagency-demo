@@ -1,5 +1,7 @@
 // Premium brand marquee animations with GSAP
-gsap.registerPlugin(ScrollTrigger);
+if (window.ScrollTrigger) {
+  gsap.registerPlugin(ScrollTrigger);
+}
 const panel = document.querySelector('.marquee-panel');
 const rows = document.querySelectorAll('.marquee-row');
 
@@ -185,8 +187,9 @@ contactForms.forEach((form) => {
     const need = form.querySelector('select')?.value || \"\";
     const message = form.querySelector('textarea')?.value || \"\";
 
+    const base = (document.querySelector('meta[name="api-base"]')?.content || 'http://localhost:4000').replace(/\/$/, '');
     try {
-      const res = await fetch('http://localhost:4000/api/contact', {
+      const res = await fetch(`${base}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, need, message })
