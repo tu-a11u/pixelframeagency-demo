@@ -97,6 +97,23 @@
     transition:opacity 0.3s ease;
     z-index:2;
   }
+  .portfolio-overlay::after{
+    content:"Click to View";
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:#e8eaff;
+    background:rgba(12,15,28,0.7);
+    border:1px solid rgba(255,255,255,0.2);
+    padding:6px 10px;
+    border-radius:999px;
+    margin-top:8px;
+    width:max-content;
+    box-shadow:0 8px 20px rgba(0,0,0,0.35);
+  }
   .portfolio-card:hover .portfolio-img{ transform:scale(1.05); }
   .portfolio-card:focus-visible{
     outline:2px solid rgba(122,215,255,0.8);
