@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import multer from "multer";
+import nodemailer from "nodemailer";
 import path from "path";
 import { fileURLToPath } from "url";
 import db, { initDb } from "./db.js";
@@ -16,6 +17,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET || "change-this-secret";
+const EMAIL_USER = process.env.EMAIL_USER || "";
+const EMAIL_PASS = process.env.EMAIL_PASS || "";
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || EMAIL_USER;
 
 app.use(cors({ origin: true }));
 app.use(express.json({ limit: "10mb" }));
@@ -23,6 +27,17 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static(path.join(__dirname, "public")));
 
 initDb();
+
+let mailer = null;
+if (EMAIL_USER && EMAIL_PASS) {
+  mailer = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: EMAIL_USER,
+      pass: EMAIL_PASS
+    }
+  });
+}
 
 function createDefaultAdmin() {
   const email = process.env.ADMIN_EMAIL || "admin@pixelframe.local";
@@ -89,6 +104,26 @@ app.post("/api/contact", (req, res) => {
     [name, email, phone, message, need || ""],
     function (err) {
       if (err) return res.status(500).json({ error: "Server error" });
+      if (mailer && NOTIFY_EMAIL) {
+        const subject = `New inquiry: ${name}`;
+        const text = [
+          `Name: ${name}`,
+          `Email: ${email}`,
+          `Phone: ${phone || "N/A"}`,
+          `Need: ${need || "N/A"}`,
+          `Message: ${message}`
+        ].join("\n");
+        setImmediate(() => {
+          mailer.sendMail({
+            from: EMAIL_USER,
+            to: NOTIFY_EMAIL,
+            subject,
+            text
+          }).catch((mailErr) => {
+            console.error("Email send failed:", mailErr.message);
+          });
+        });
+      }
       return res.json({ ok: true, id: this.lastID });
     }
   );
